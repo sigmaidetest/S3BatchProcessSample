@@ -21,6 +21,7 @@ exports.handler = function (event, context, callback) {
 			console.log(`${numFiles} files found to process`);
 
 			if (numFiles === 0) {
+				// There are no files to process. So notify that.
 				sns.publish({
 					Message: 'No files found to be processed',
 					Subject: 'Processing Finished',
@@ -55,7 +56,7 @@ exports.handler = function (event, context, callback) {
 					}
 
 					if ((successCount + failedCount) === numFiles) {
-						// This is the last file
+						// This is the last file. So send the notification.
 						let message = `Processing finished. ${successCount} successful and ${failedCount} failed`;
 
 						sns.publish({
