@@ -1,8 +1,11 @@
+import {sendNotification} from "./NotificationUtils";
+
 let AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 exports.handler = function (event, context, callback) {
 
 	console.log(`Batch process triggered at ${event.time}`);
+	sendNotification("Batch Process Started", `Batch process started at ${event.time}`)
 
 	s3.listObjects({
 		'Bucket': 'slapp-batch-process-sample',
