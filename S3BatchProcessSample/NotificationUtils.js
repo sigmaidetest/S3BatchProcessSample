@@ -15,7 +15,7 @@ module.exports = {
                 return true;
             })
             .catch(err => {
-                console.err("Error occurred while publishing notification", err, err.stack);
+                console.log("Error occurred while publishing notification", err, err.stack);
                 throw err;
             });
     }
