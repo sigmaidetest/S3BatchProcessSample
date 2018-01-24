@@ -20,6 +20,24 @@ exports.handler = function (event, context, callback) {
 
 			console.log(`${numFiles} files found to process`);
 
+			if (numFiles === 0) {
+				sns.publish({
+					Message: 'No files found to be processed',
+					Subject: 'Processing Finished',
+					MessageAttributes: {},
+					MessageStructure: 'String',
+					TopicArn: 'arn:aws:sns:us-east-1:480964559519:S3BatchProcessNotifications'
+				}).promise()
+					.then(data => {
+						console.log("Successfully published notification");
+						callback(null, "Processing finished without any files & Notification sent");
+					})
+					.catch(err => {
+						console.log("Error occurred while publishing notification", err, err.stack);
+						callback(null, "Processing finished without any files & Notification failed");
+					});
+			}
+
 			data.Contents.forEach(file => {
 				let fileName = file.Key;
 				console.log(`Processing File : ${fileName}`);
@@ -36,7 +54,7 @@ exports.handler = function (event, context, callback) {
 						successCount++;
 					}
 
-					if ((successCount + failedCount) == numFiles) {
+					if ((successCount + failedCount) === numFiles) {
 						// This is the last file
 						let message = `Processing finished. ${successCount} successful and ${failedCount} failed`;
 
